@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* color to bve used throughout the project */
+@theme {
+  --color-brand-blue: #324bed;
+  --color-brand-gold: #fdc700;
+  --color-brand-white: #ffffff;
+}
