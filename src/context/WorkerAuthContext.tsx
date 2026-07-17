@@ -17,6 +17,7 @@ import {
 import { getWorkerToken } from "../utils/storage";
 import type { Worker, WorkerLoginPayload } from "../types/worker";
 import type { Message } from "../types/message";
+import { getRoomMessages } from "../api/workerApi";
 
 interface WorkerAuthContextValue {
   worker: Worker | null;
@@ -61,7 +62,7 @@ export function WorkerAuthProvider({ children }: { children: ReactNode }) {
     };
   }, [worker]);
 
-  const { messages, sendMessage } = useChatSocket(socket, activeRoomId);
+  const { messages, sendMessage } = useChatSocket(socket, activeRoomId , getRoomMessages);
 
   // called from the dashboard whenever the worker opens a specific room
   const openRoom = useCallback((roomId: string) => {
