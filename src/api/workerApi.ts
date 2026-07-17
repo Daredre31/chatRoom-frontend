@@ -2,6 +2,7 @@ import { createApiClient } from "./axiosClient";
 import { attachWorkerInterceptor } from "./interceptors/workerInterceptor";
 import type { ApiResponse } from "../types/api";
 import type { Room } from "../types/room";
+import { Message } from "../types/message";
 import type {
   WorkerLoginPayload,
   WorkerLoginResponse,
@@ -38,4 +39,11 @@ export async function getMyRooms(): Promise<Room[]> {
     "/api/room/mine"
   );
   return response.data.data.rooms;
+}
+
+export async function getRoomMessages(roomId: string): Promise<Message[]> {
+  const response = await client.get<ApiResponse<{ messages: Message[] }>>(
+    `/api/rooms/${roomId}/messages`
+  );
+  return response.data.data.messages;
 }

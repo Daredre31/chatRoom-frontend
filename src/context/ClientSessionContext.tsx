@@ -15,6 +15,7 @@ import {
 } from "../sockets/socketClient";
 import { getClientToken } from "../utils/storage";
 import type { Message } from "../types/message";
+import { getRoomMessages } from "../api/clientApi";
 
 interface ClientSessionContextValue {
   roomId: string | null;
@@ -46,7 +47,7 @@ export function ClientSessionProvider({ children }: { children: ReactNode }) {
     };
   }, [roomId]);
 
-  const { messages, sendMessage } = useChatSocket(socket, roomId);
+  const { messages, sendMessage } = useChatSocket(socket, roomId , getRoomMessages);
 
   // returns the new roomId so the page can navigate straight to /chat/:roomId
   const join = useCallback(

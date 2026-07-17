@@ -3,6 +3,7 @@ import { attachClientInterceptor } from "./interceptors/clientInterceptor";
 import type { ApiResponse } from "../types/api";
 import type { Service } from "../types/service";
 import type { JoinRoomResponse } from "../types/room";
+import { Message } from "../types/message";
 
 const client = createApiClient();
 attachClientInterceptor(client);
@@ -24,4 +25,11 @@ export async function joinRoom(
     { serviceSlug, existingToken }
   );
   return response.data.data;
+}
+
+export async function getRoomMessages(roomId: string): Promise<Message[]> {
+  const response = await client.get<ApiResponse<{ messages: Message[] }>>(
+    `/api/rooms/${roomId}/messages`
+  );
+  return response.data.data.messages;
 }

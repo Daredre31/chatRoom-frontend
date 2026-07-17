@@ -4,16 +4,53 @@ import { SOCKET_EVENTS } from "../sockets/socketEvents";
 import type { Message, SendMessagePayload } from "../types/message";
 
 // generic hook shared by both client and worker chat pages
-// takes an already connected socket and the active roomId
-export function useChatSocket(socket: Socket | null, roomId: string | null) {
+// fetches history once per room, then the socket handles anything new
+export function useChatSocket(
+  socket: Socket | null,
+  roomId: string | null,
+  fetchHistory: (roomId: string) => Promise<Message[]>
+) {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  // loads past messages whenever the active room changes
+  useEffect(() => {
+    if (!roomId) {
+      setMessages([]);
+      return;
+    }
+
+    let cancelled = false;
+    setHistoryLoading(true);
+
+    fetchHistory(roomId)
+      .then((history) => {
+        if (!cancelled) {
+          setMessages(history);
+        }
+      })
+      .catch(() => {
+        // history failing to load isn't fatal, live messages still work
+        // just means older context is missing for this session
+        if (!cancelled) {
+          setMessages([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setHistoryLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [roomId, fetchHistory]);
 
   useEffect(() => {
     if (!socket) return;
 
     const handleNewMessage = (msg: Message) => {
-      // only append if it belongs to the room currently open
-      // guards against messages arriving for a different room in the same session
       if (msg.roomId === roomId) {
         setMessages((prev) => [...prev, msg]);
       }
@@ -26,11 +63,6 @@ export function useChatSocket(socket: Socket | null, roomId: string | null) {
     };
   }, [socket, roomId]);
 
-  // resets messages when switching rooms, so old room's messages don't linger
-  useEffect(() => {
-    setMessages([]);
-  }, [roomId]);
-
   const sendMessage = useCallback(
     (content: string) => {
       if (!socket || !roomId) return;
@@ -41,5 +73,5 @@ export function useChatSocket(socket: Socket | null, roomId: string | null) {
     [socket, roomId]
   );
 
-  return { messages, sendMessage };
+  return { messages, sendMessage, historyLoading };
 }
