@@ -4,8 +4,8 @@ import {
   useEffect,
   useState,
   useCallback,
-  ReactNode,
 } from "react";
+import type { ReactNode } from "react";
 import type { Socket } from "socket.io-client";
 import { useClientRoom } from "../hooks/useClientRoom";
 import { useChatSocket } from "../hooks/useChatSocket";
@@ -20,7 +20,7 @@ interface ClientSessionContextValue {
   roomId: string | null;
   loading: boolean;
   error: string | null;
-  join: (serviceSlug: string) => Promise<void>;
+  join: (serviceSlug: string) => Promise<string>;
   messages: Message[];
   sendMessage: (content: string) => void;
 }
@@ -48,9 +48,11 @@ export function ClientSessionProvider({ children }: { children: ReactNode }) {
 
   const { messages, sendMessage } = useChatSocket(socket, roomId);
 
+  // returns the new roomId so the page can navigate straight to /chat/:roomId
   const join = useCallback(
     async (serviceSlug: string) => {
-      await joinRoom(serviceSlug);
+      const result = await joinRoom(serviceSlug);
+      return result.roomId;
     },
     [joinRoom]
   );
@@ -68,7 +70,9 @@ export function ClientSessionProvider({ children }: { children: ReactNode }) {
 export function useClientSession() {
   const ctx = useContext(ClientSessionContext);
   if (!ctx) {
-    throw new Error("useClientSession must be used within a ClientSessionProvider");
+    throw new Error(
+      "useClientSession must be used within a ClientSessionProvider"
+    );
   }
   return ctx;
 }

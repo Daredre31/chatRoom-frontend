@@ -4,6 +4,7 @@ const CLIENT_TOKEN_KEY = "chatToken";
 const CLIENT_ROOM_ID_KEY = "chatRoomId";
 const WORKER_TOKEN_KEY = "workerToken";
 const WORKER_PROFILE_KEY = "workerProfile";
+const CLIENT_SERVICE_SLUG_KEY = "chatServiceSlug";
 
 
 // client side, token and room id
@@ -26,6 +27,7 @@ export function setClientRoomId(roomId: string): void {
 export function clearClientSession(): void {
   localStorage.removeItem(CLIENT_TOKEN_KEY);
   localStorage.removeItem(CLIENT_ROOM_ID_KEY);
+  localStorage.removeItem(CLIENT_SERVICE_SLUG_KEY);
 }
 
 // worker side, just the access token
@@ -58,4 +60,12 @@ export function getWorkerProfile(): Worker | null {
 
 export function setWorkerProfile(worker: Worker): void {
   localStorage.setItem(WORKER_PROFILE_KEY, JSON.stringify(worker));
+}
+
+export function getClientServiceSlug(): string | null {
+  return localStorage.getItem(CLIENT_SERVICE_SLUG_KEY);
+}
+
+export function setClientServiceSlug(slug: string): void {
+  localStorage.setItem(CLIENT_SERVICE_SLUG_KEY, slug);
 }

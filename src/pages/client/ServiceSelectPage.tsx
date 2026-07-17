@@ -11,13 +11,13 @@ export function ServiceSelectPage() {
   const navigate = useNavigate();
 
   const handleSelect = async (slug: string) => {
-    try {
-      await join(slug);
-      navigate("/chat");
-    } catch {
-      // error state is already tracked in context, nothing extra to do here
-    }
-  };
+  try {
+    const roomId = await join(slug);
+    navigate(`/chat/${roomId}`);
+  } catch {
+    // error state is already tracked in context, nothing extra to do here
+  }
+};
 
   if (loading) {
     return (

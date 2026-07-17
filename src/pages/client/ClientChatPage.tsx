@@ -1,16 +1,28 @@
+import { useParams } from "react-router-dom";
 import { useClientSession } from "../../context/ClientSessionContext";
 import { MessageList } from "../../component/chats/MessageList";
 import { MessageInput } from "../../component/chats/MessageInput";
 
-// this page assumes a room has already been joined before landing here
-// ServiceSelectPage is responsible for calling join before navigating over
+// roomId comes from the url now, so each room has its own address
+// and two tabs/services can never bleed into each other
 export function ClientChatPage() {
-  const { roomId, messages, sendMessage } = useClientSession();
+  const { roomId: urlRoomId } = useParams<{ roomId: string }>();
+  const { roomId: sessionRoomId, messages, sendMessage } = useClientSession();
 
-  if (!roomId) {
+  // session hasn't caught up yet (e.g. straight refresh), show a light loading state
+  if (!sessionRoomId) {
     return (
       <div className="flex items-center justify-center h-screen text-gray-400">
-        No active chat, please pick a service first
+        Loading chat
+      </div>
+    );
+  }
+
+  // url points at a different room than the one actually stored, don't show it
+  if (urlRoomId !== sessionRoomId) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-400">
+        This chat is no longer active
       </div>
     );
   }

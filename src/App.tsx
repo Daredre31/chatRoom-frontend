@@ -25,7 +25,7 @@ export default function App() {
         }
       />
       <Route
-        path="/chat"
+        path="/chat/:roomId"
         element={
           <ClientSessionProvider>
             <ClientChatPage />

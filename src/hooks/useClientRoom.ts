@@ -5,25 +5,31 @@ import {
   setClientToken,
   getClientRoomId,
   setClientRoomId,
+  getClientServiceSlug,
+  setClientServiceSlug,
 } from "../utils/storage";
 
-// handles joining a room and keeping the token/roomId in sync with storage
 export function useClientRoom() {
   const [roomId, setRoomId] = useState<string | null>(getClientRoomId());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // call this the moment a client clicks a service button
   const join = useCallback(async (serviceSlug: string) => {
     setLoading(true);
     setError(null);
 
     try {
-      const existingToken = getClientToken() ?? undefined;
+      const savedSlug = getClientServiceSlug();
+      const savedToken = getClientToken();
+
+      const existingToken =
+        savedSlug === serviceSlug ? savedToken ?? undefined : undefined;
+
       const result = await joinRoom(serviceSlug, existingToken);
 
       setClientToken(result.token);
       setClientRoomId(result.roomId);
+      setClientServiceSlug(serviceSlug);
       setRoomId(result.roomId);
 
       return result;
