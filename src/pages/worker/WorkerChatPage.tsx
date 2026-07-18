@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useWorkerSession } from "../../context/WorkerAuthContext";
+import { ChatHeader } from "../../component/chats/ChatHeader";
 import { MessageList } from "../../component/chats/MessageList";
 import { MessageInput } from "../../component/chats/MessageInput";
 
-// roomId now comes straight from the url, not a prop
-// this way refreshing mid chat keeps the worker on the same room
 export function WorkerChatPage() {
   const { roomId } = useParams<{ roomId: string }>();
   const { activeRoomId, openRoom, messages, sendMessage } = useWorkerSession();
@@ -18,7 +17,7 @@ export function WorkerChatPage() {
 
   if (!roomId) {
     return (
-      <div className="flex items-center justify-center h-screen text-gray-400">
+      <div className="flex items-center justify-center h-screen text-text-muted text-sm">
         No room selected
       </div>
     );
@@ -27,12 +26,9 @@ export function WorkerChatPage() {
   const isActive = activeRoomId === roomId;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
-      <header className="bg-brand-blue text-brand-white p-4 text-sm font-medium">
-        Room {roomId}
-      </header>
-
-      <MessageList messages={messages} currentSenderType="worker" />
+    <div className="flex flex-col h-screen">
+      <ChatHeader title="Client" subtitle={`Room ${roomId.slice(-6)}`} initial="C" />
+      <MessageList messages={messages} currentSenderType="worker" loading={!isActive} />
       <MessageInput onSend={sendMessage} disabled={!isActive} />
     </div>
   );
