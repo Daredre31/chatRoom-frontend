@@ -1,7 +1,8 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useWorkerSession } from "../../context/WorkerAuthContext";
+import { AuthLayout } from "../../component/layout/AuthLayout";
 
 export function WorkerLoginPage() {
   const { login, loading, error } = useWorkerSession();
@@ -17,48 +18,72 @@ export function WorkerLoginPage() {
       await login({ email, password });
       navigate("/worker/dashboard");
     } catch {
-      // error already tracked in context, stay on the page
+      // error already tracked in context
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-white">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 w-full max-w-sm p-6 border rounded-lg"
+    <AuthLayout eyebrow="Worker access" title="Welcome back, log in to your dashboard">
+      <h2
+        className="text-xl font-bold text-text-primary mb-1"
+        style={{ fontFamily: "var(--font-display)" }}
       >
-        <h1 className="text-lg font-semibold text-brand-blue">
-          Worker login
-        </h1>
+        Log in
+      </h2>
+      <p className="text-sm text-text-secondary mb-6">
+        Enter your details to view your rooms
+      </p>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
-        />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-text-secondary">
+            Email
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="you@company.com"
+            className="bg-bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-colors"
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
-        />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-text-secondary">
+            Password
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="••••••••"
+            className="bg-bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-colors"
+          />
+        </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red text-xs bg-red-bg border border-red-border rounded-lg px-3 py-2">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="bg-brand-blue text-brand-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+          className="bg-teal hover:bg-teal-hover text-white py-2.5 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 mt-2"
         >
           {loading ? "Logging in" : "Log in"}
         </button>
       </form>
-    </div>
+
+      <p className="text-xs text-text-secondary text-center mt-6">
+        Don't have an account?{" "}
+        <Link to="/worker/register" className="text-teal font-medium hover:underline">
+          Sign up
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }
