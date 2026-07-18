@@ -47,13 +47,18 @@ export function ServiceSelectPage() {
         </p>
 
         <div className="flex flex-col gap-2">
-          {services.map((service) => (
-            <ServiceButton
+          {services.map((service, index) => (
+            <div
               key={service._id}
-              service={service}
-              onSelect={handleSelect}
-              disabled={joining}
-            />
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${index * 60}ms` }}
+            >
+              <ServiceButton
+                service={service}
+                onSelect={handleSelect}
+                disabled={joining}
+              />
+            </div>
           ))}
         </div>
       </div>
