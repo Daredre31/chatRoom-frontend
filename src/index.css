@@ -1,8 +1,60 @@
 @import "tailwindcss";
 
-/* color to bve used throughout the project */
 @theme {
-  --color-brand-blue: #324bed;
-  --color-brand-gold: #fdc700;
-  --color-brand-white: #ffffff;
+  /* primary */
+  --color-teal: #0f6e56;
+  --color-teal-hover: #085041;
+  --color-teal-light: #e1f5ee;
+  --color-teal-mid: #5dcaa5;
+  --color-teal-border: #9fe1cb;
+
+  /* sidebar & dark surfaces */
+  --color-dark: #2c2c2a;
+  --color-dark-mid: #444441;
+  --color-dark-muted: #5f5e5a;
+
+  /* page backgrounds */
+  --color-bg-page: #f1efe8;
+  --color-bg-card: #ffffff;
+  --color-bg-soft: #d3d1c7;
+
+  /* text */
+  --color-text-primary: #2c2c2a;
+  --color-text-secondary: #888780;
+  --color-text-muted: #b4b2a9;
+
+  /* status, repurposed as service availability */
+  --color-green: #3b6d11;
+  --color-green-bg: #eaf3de;
+  --color-green-border: #c0dd97;
+
+  --color-amber: #854f0b;
+  --color-amber-bg: #faeeda;
+  --color-amber-border: #fac775;
+
+  --color-red: #a32d2d;
+  --color-red-bg: #fcebeb;
+  --color-red-border: #f7c1c1;
+
+  --color-blue: #185fa5;
+  --color-blue-bg: #e6f1fb;
+  --color-blue-border: #b5d4f4;
+
+  /* borders */
+  --color-border: #d3d1c7;
+  --color-border-soft: #e8e6df;
+
+  /* sidebar text */
+  --color-sidebar-text: #b4b2a9;
+  --color-sidebar-muted: #5f5e5a;
+
+  /* type */
+  --font-display: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-primary);
 }
